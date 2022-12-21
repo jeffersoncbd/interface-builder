@@ -1,7 +1,10 @@
 [package]
 name = "interface-builder"
 version = "0.1.0"
+author = "Jefferson Carlos"
 edition = "2021"
+description = "A tool for build simple TUI's"
+license = "MIT"
 
 [dependencies]
 crossterm = "0.25.0"
