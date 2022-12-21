@@ -10,3 +10,10 @@ pub fn clear_terminal() {
     terminal::Clear(ClearType::Purge),
   ).expect("Failed to end application");
 }
+
+pub fn move_cursor_to(x: u16, y: u16) {
+  execute!(
+    stdout(),
+    cursor::MoveTo(x, y)
+  ).expect("Failed to move cursor");
+}
