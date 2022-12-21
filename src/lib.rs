@@ -4,11 +4,37 @@ use crossterm::event::KeyCode;
 use builder::components;
 
 pub struct Page {
-  pub title: Option<String>,
-  pub content: Vec<String>,
-  pub footer: Option<Vec<String>>,
-  pub width: u16,
-  pub height: Option<u16>,
+  title: Option<String>,
+  content: Vec<String>,
+  footer: Option<Vec<String>>,
+  width: u16,
+  height: Option<u16>,
+}
+impl Page {
+  fn convert_vec_str(vec: Vec<&str>) -> Vec<String> {
+    let mut converted: Vec<String> = Vec::new();
+    for item in vec {
+      converted.push(String::from(item));
+    }
+    converted
+  }
+
+  pub fn new(
+    title: Option<&str>,
+    content: Vec<&str>,
+    footer: Option<Vec<&str>>,
+    width: u16,
+    height: Option<u16>,
+  ) -> Page {
+    let title: Option<String> = match title {
+      Some(title) => Some(String::from(title)), None => None
+    };
+    let content = Page::convert_vec_str(content);
+    let footer: Option<Vec<String>> = match footer {
+      Some(footer) => Some(Page::convert_vec_str(footer)), None => None
+    };
+    Page { title, content, footer, width, height }
+  }
 }
 
 pub struct Application {
@@ -21,13 +47,12 @@ impl Application {
   }
 
   pub fn run_hello_builder(&self) {
-    self.print_page(&Page {
-      title: Some(String::from("Hello builder")),
-      content: vec![String::from("Welcome to Interface Builder")],
-      footer: Some(vec![String::from("Press ESC to exit...")]),
-      width: 37,
-      height: None
-    });
+    self.print_page(&Page::new(
+      Some("Hello builder"),
+      vec!["Welcome to Interface Builder"],
+      Some(vec!["Press ESC to exit..."]),
+      37, None
+    ));
 
     builder::await_key_code(KeyCode::Esc);
 
