@@ -1,6 +1,8 @@
 use std::io::{stdout, Stdout};
 
-use crossterm::{execute, terminal::{self, ClearType}, cursor, style::Print};
+use crossterm::{execute, cursor, style::Print};
+
+use crate::builder::tools::{clear_terminal, move_cursor_to};
 
 use super::tools;
 
@@ -58,30 +60,34 @@ impl Page {
     for (i, line) in self.content.iter().enumerate() {
       execute!(
         self.stdout,
-        cursor::MoveTo(6, i as u16 + 3),
+        cursor::MoveTo(5, i as u16 + 3),
         Print(line)
       ).expect("Failed on print content");
     }
   }
   fn print_footer(&mut self) {
     for (i, line) in self.footer.iter().enumerate() {
-      let y: u16 = i as u16 + self.content.len() as u16 + 5;
+      let y = match self.height {
+        Some(height) => height + i as u16 + 1,
+        None => i as u16 + self.content.len() as u16 + 5
+      };
       execute!(
         self.stdout,
-        cursor::MoveTo(6, y),
+        cursor::MoveTo(5, y),
         Print(line)
       ).expect("Failed on print content");
     }
   }
   pub fn print(&mut self) {
-    execute!(
-      self.stdout,
-      terminal::Clear(ClearType::All),
-      terminal::Clear(ClearType::Purge),
-    ).expect("Print Page failed");
+    clear_terminal();
     self.print_box();
     self.print_title();
     self.print_content();
     self.print_footer();
+    let y = match self.height {
+      Some(height) => height + self.footer.len() as u16 + 2,
+      None => self.content.len() as u16 + self.footer.len() as u16 + 6
+    };
+    move_cursor_to(0, y)
   }
 }
