@@ -3,7 +3,11 @@ pub mod tools;
 
 use std::{io::stdout, time::Duration};
 
-use crossterm::{execute, terminal::{self, ClearType, enable_raw_mode, disable_raw_mode}, cursor, Result, event::{Event, KeyEvent, KeyCode, self, poll}, style};
+use crossterm::{
+  execute, cursor,
+  terminal::{self, ClearType, enable_raw_mode, disable_raw_mode},
+  event::{Event, KeyCode, self, poll},
+};
 
 pub fn await_key_code(key_code: KeyCode) {
   enable_raw_mode().expect("Failed on enable raw mode");
