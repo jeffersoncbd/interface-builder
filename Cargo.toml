@@ -1,6 +1,6 @@
 [package]
 name = "interface-builder"
-version = "0.1.2"
+version = "0.1.3"
 author = "Jefferson Carlos"
 edition = "2021"
 description = "A tool for build simple TUI's"
