@@ -1,4 +1,4 @@
-use std::io::{stdout, Stdout};
+use std::{io::{stdout, Stdout}, fmt::Display};
 
 use crossterm::{execute, cursor, style::Print};
 
@@ -6,16 +6,29 @@ use crate::builder::tools::{clear_terminal, move_cursor_to};
 
 use super::tools;
 
-pub struct Page {
+pub enum Line<'a> {
+  String(String),
+  Str(&'a str),
+}
+impl<'a> Display for Line<'a> {
+  fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    match self {
+      Line::String(value) => write!(f, "{}", value),
+      Line::Str(value) => write!(f, "{}", value),
+    }
+  }
+}
+
+pub struct Page<'a> {
   stdout: Stdout,
   width: u16,
   height: Option<u16>,
-  title: Option<String>,
-  content: Vec<String>,
-  footer: Vec<String>
+  title: Option<&'a str>,
+  content: Vec<Line<'a>>,
+  footer: Vec<Line<'a>>
 }
-impl Page {
-  pub fn new(width: u16, height: Option<u16>) -> Page {
+impl<'a> Page<'a> {
+  pub fn new(width: u16, height: Option<u16>) -> Page<'a> {
     Page {
       stdout: stdout(),
       width, height,
@@ -24,18 +37,14 @@ impl Page {
       footer: Vec::new()
     }
   }
-  pub fn title(&mut self, title: &str) {
-    self.title = Some(String::from(title));
+  pub fn title(&mut self, title: &'a str) {
+    self.title = Some(title);
   }
-  pub fn content(&mut self, content: Vec<&str>){
-    for line in content {
-      self.content.push(String::from(line));
-    }
+  pub fn content(&mut self, content: Vec<Line<'a>>){
+    self.content = content
   }
-  pub fn footer(&mut self, footer: Vec<&str>) {
-    for line in footer {
-      self.footer.push(String::from(line));
-    }
+  pub fn footer(&mut self, footer: Vec<Line<'a>>) {
+    self.footer = footer
   }
 
   fn print_box(&self) {

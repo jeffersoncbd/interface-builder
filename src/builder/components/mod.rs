@@ -1,3 +1,5 @@
 mod tools;
 mod page;
-pub use crate::builder::components::page::Page;
+
+pub use page::Page;
+pub use page::Line;
