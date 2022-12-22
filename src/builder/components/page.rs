@@ -40,8 +40,8 @@ impl Page {
 
   fn print_box(&self) {
     match self.height {
-      Some(height) => tools::simple_box::print(self.width, height),
-      None => tools::simple_box::print(self.width, self.content.len() as u16 + 4)
+      Some(height) => tools::bordered_box::print(self.width, height),
+      None => tools::bordered_box::print(self.width, self.content.len() as u16 + 4)
     }
   }
   fn print_title(&mut self) {
